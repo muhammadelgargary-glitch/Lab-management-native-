@@ -103,5 +103,4 @@ jobs:
           eas build \
             --platform android \
             --profile preview \
-            --non-interactive \
-            --project-id c9cc337d-0ac3-4839-b42d-9d2be8387c56
+            --non-interactive
