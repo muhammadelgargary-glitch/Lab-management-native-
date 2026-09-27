@@ -5,24 +5,37 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+
+    "owner": "an7mds-team",
+
     "platforms": [
       "android",
       "web"
     ],
+
     "splash": {
       "backgroundColor": "#F5F7F6"
     },
+
     "android": {
       "package": "com.medical.lab",
       "adaptiveIcon": {
         "backgroundColor": "#1d3b36"
       }
     },
+
     "experiments": {
       "baseUrl": "/MedicalLabReactNative"
     },
+
     "plugins": [
       "@react-native-google-signin/google-signin"
-    ]
+    ],
+
+    "extra": {
+      "eas": {
+        "projectId": "c9cc337d-0ac3-4839-b42d-9d2be8387c56"
+      }
+    }
   }
 }
