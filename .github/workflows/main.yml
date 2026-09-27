@@ -3,93 +3,77 @@ name: Build Android APK and Web
 on:
   workflow_dispatch:
 
-  push:
-    branches:
-      - main
-
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
 jobs:
   build:
-    name: Build Android APK and Web
     runs-on: ubuntu-latest
 
     steps:
-
-      # 1. Download project
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3. Show environment
-      - name: Show environment
+      - name: Show Node and npm versions
         run: |
           node --version
           npm --version
 
-      # 4. Check project files
-      - name: Check project
-        run: |
-          echo "Project files:"
-          ls -la
-          echo ""
-          echo "Package.json:"
-          test -f package.json
-          cat package.json
-
-      # 5. Install dependencies
       - name: Install dependencies
         run: |
           npm install --no-audit --no-fund
 
-      # 6. Install Expo Web dependencies
       - name: Install Expo Web dependencies
         run: |
           npx expo install react-native-web react-dom @expo/metro-runtime
 
-      # 7. Check Expo project
-      - name: Expo Doctor
+      - name: Verify Web dependencies
+        run: |
+          npm list react-native-web react-dom @expo/metro-runtime
+
+      - name: Check Expo configuration
+        run: |
+          npx expo config --json
+
+      - name: Check Expo Doctor
         run: |
           npx expo-doctor || true
 
-      # 8. Check Expo configuration
-      - name: Check Expo configuration
-        run: |
-          npx expo config --type public
-
-      # 9. Export Web
-      - name: Export Web
+      - name: Export Web Project
         run: |
           npx expo export --platform web
 
-      # 10. Upload Web artifact
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v5
+
       - name: Upload Web artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: medical-lab-web
-          path: dist
+          path: ./dist
 
-      # 11. Install EAS CLI
+      - name: Deploy Web to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
       - name: Install EAS CLI
-        run: |
-          npm install --global eas-cli
+        run: npm install -g eas-cli
 
-      # 12. Verify Expo authentication
-      - name: Verify Expo authentication
+      - name: Configure EAS Project
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          eas whoami
+          eas init --account an7mds-team --non-interactive
 
-      # 13. Build Android APK
+      - name: Show EAS version
+        run: eas --version
+
       - name: Build Android APK
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
