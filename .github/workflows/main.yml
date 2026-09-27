@@ -54,28 +54,8 @@ jobs:
           npx expo-doctor || true
 
       - name: Check Expo configuration
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           npx expo config --type public
-
-      - name: Verify EAS project configuration
-        env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: |
-          echo "Checking EAS project..."
-          eas project:info \
-            --id c9cc337d-0ac3-4839-b42d-9d2be8387c56
-
-      - name: Export Web
-        run: |
-          npx expo export --platform web
-
-      - name: Upload Web artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: medical-lab-web
-          path: dist
 
       - name: Install EAS CLI
         run: |
@@ -97,6 +77,24 @@ jobs:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
           eas whoami
+
+      - name: Verify EAS project
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          echo "Checking EAS project..."
+          eas project:info \
+            --id c9cc337d-0ac3-4839-b42d-9d2be8387c56
+
+      - name: Export Web
+        run: |
+          npx expo export --platform web
+
+      - name: Upload Web artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: medical-lab-web
+          path: dist
 
       - name: Build Android APK
         env:
